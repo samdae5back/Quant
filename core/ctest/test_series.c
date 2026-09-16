@@ -63,6 +63,20 @@ void test_rolling_large_offset(void)
     CHECK_NEAR(out[4], sqrt(2.5), 1e-6);
 }
 
+void test_rolling_std_cancellation(void)
+{
+    /* a large swing followed by two nearly equal values: the running-sum formula
+     * lost eight digits here (found by QuickCheck against the reference) */
+    double x[] = {988.6177351851239, -461.9198578778655, -998.7301287139791, -999.200399919494};
+    double out[4];
+    CHECK_EQ_INT(qc_rolling_std(x, 4, 2, out), QC_OK);
+    double m = (x[2] + x[3]) / 2.0;
+    double ref = sqrt((x[2] - m) * (x[2] - m) + (x[3] - m) * (x[3] - m));
+    CHECK_NEAR(out[3], ref, 1e-12);
+    CHECK_EQ_INT(qc_rolling_zscore(x, 4, 2, out), QC_OK);
+    CHECK_NEAR(out[3], (x[3] - m) / ref, 1e-9);
+}
+
 void test_ewma(void)
 {
     double x[] = {1, NAN, 3};
