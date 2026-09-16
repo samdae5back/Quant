@@ -1,0 +1,48 @@
+cabal-version:      3.0
+name:               quant-core
+version:            0.1.0.0
+synopsis:           C numeric kernels for the quant project with safe Haskell bindings
+description:
+    Rolling statistics, small dense linear algebra, regime geometry and a
+    vectorised portfolio simulator written in C11, exposed to Haskell through
+    thin Storable-vector wrappers. The C sources live in cbits/ and are also
+    buildable standalone with the Makefile in this directory.
+license:            GPL-3.0-or-later
+build-type:         Simple
+extra-source-files: include/qcore/*.h
+                    cbits/*.c
+
+common warnings
+    ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates
+                 -Wincomplete-uni-patterns -Wmissing-export-lists -Wpartial-fields
+                 -Wredundant-constraints
+
+library
+    import:           warnings
+    exposed-modules:  Quant.Core
+                      Quant.Core.Error
+                      Quant.Core.Matrix
+                      Quant.Core.Series
+                      Quant.Core.Stats
+                      Quant.Core.Linalg
+                      Quant.Core.Regime
+                      Quant.Core.Simulate
+    other-modules:    Quant.Core.FFI
+    build-depends:    base >=4.14 && <5,
+                      vector >=0.12 && <0.14
+    hs-source-dirs:   src
+    default-language: Haskell2010
+    c-sources:        cbits/qcore.c
+                      cbits/series.c
+                      cbits/stats.c
+                      cbits/linalg.c
+                      cbits/regime.c
+                      cbits/simulate.c
+    include-dirs:     include
+    install-includes: qcore/qcore.h
+                      qcore/series.h
+                      qcore/stats.h
+                      qcore/linalg.h
+                      qcore/regime.h
+                      qcore/simulate.h
+    cc-options:       -std=c11 -O2 -Wall -Wextra

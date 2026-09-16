@@ -1,0 +1,27 @@
+cabal-version:      3.0
+name:               quant-cli
+version:            0.1.0.0
+synopsis:           Command line front end for the quant project
+description:
+    A thin executable that reads configuration and local data, calls the quant
+    library and writes results under a runs directory. No strategy logic lives here.
+license:            GPL-3.0-or-later
+build-type:         Simple
+
+executable quant
+    main-is:          Main.hs
+    hs-source-dirs:   app
+    build-depends:    base >=4.14 && <5,
+                      quant,
+                      quant-core,
+                      vector,
+                      text,
+                      time,
+                      aeson,
+                      bytestring,
+                      directory,
+                      filepath,
+                      http-client-tls,
+                      optparse-applicative >=0.16
+    default-language: Haskell2010
+    ghc-options:      -Wall -threaded -rtsopts
