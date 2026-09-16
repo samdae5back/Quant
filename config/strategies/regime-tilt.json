@@ -1,0 +1,11 @@
+{
+  "risky": "SPY",
+  "safe": "BIL",
+  "riskOnAbove": 0.25,
+  "riskOffBelow": -0.25,
+  "riskOnWeight": 1.0,
+  "neutralWeight": 0.6,
+  "riskOffWeight": 0.2,
+  "rebalance": "monthly",
+  "costBps": 5
+}

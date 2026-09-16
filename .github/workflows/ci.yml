@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  c-kernels:
+    name: C kernels (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Unit tests
+        run: make -C core test
+      - name: Sanitizers
+        run: make -C core asan
+      - name: Shared library
+        run: make -C core shared
+
+  haskell:
+    name: Haskell (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: haskell-actions/setup@v2
+        id: setup
+        with:
+          ghc-version: "9.6"
+          cabal-version: "3.12"
+      - name: Cache cabal store
+        uses: actions/cache@v5
+        with:
+          path: |
+            ${{ steps.setup.outputs.cabal-store }}
+            dist-newstyle
+          key: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-${{ hashFiles('**/*.cabal', 'cabal.project') }}
+          restore-keys: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-
+      - name: Build
+        run: cabal build all
+      - name: Test
+        run: cabal test all
+      - name: Offline smoke run on synthetic data
+        run: make smoke

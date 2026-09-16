@@ -1,0 +1,6 @@
+packages: core/
+          lib/
+          cli/
+
+-- Reproducible builds: freeze with `cabal freeze` once the dependency set settles.
+tests: True

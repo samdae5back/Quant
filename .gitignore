@@ -1,0 +1,30 @@
+# Haskell / cabal
+dist-newstyle/
+cabal.project.local
+cabal.project.local~
+.ghc.environment.*
+*.hi
+*.o
+*.dyn_hi
+*.dyn_o
+
+# C standalone build
+core/build/
+
+# Local data and results: never commit real market data or API keys
+data/raw/*
+!data/raw/.gitkeep
+data/cache/*
+!data/cache/.gitkeep
+runs/*
+!runs/.gitkeep
+*.env
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Python
+__pycache__/
+.ipynb_checkpoints/

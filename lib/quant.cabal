@@ -1,0 +1,75 @@
+cabal-version:      3.0
+name:               quant
+version:            0.1.0.0
+synopsis:           Macro state vector, meta index, regimes and strategies (pure Haskell domain layer)
+description:
+    The domain library of the quant project. Data loading and alignment,
+    indicator definitions, the macro state vector and meta index, regime
+    statistics, strategy definitions, the backtest driver and performance
+    metrics. Numeric kernels come from quant-core.
+license:            GPL-3.0-or-later
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates
+                 -Wincomplete-uni-patterns -Wmissing-export-lists -Wpartial-fields
+                 -Wredundant-constraints
+
+library
+    import:           warnings
+    exposed-modules:  Quant.Types
+                      Quant.Data.Csv
+                      Quant.Data.Fred
+                      Quant.Data.Prices
+                      Quant.Data.Cache
+                      Quant.Data.Calendar
+                      Quant.Data.Align
+                      Quant.Indicator
+                      Quant.Indicators
+                      Quant.State
+                      Quant.MetaIndex
+                      Quant.Regime
+                      Quant.Exposure
+                      Quant.Strategy
+                      Quant.Strategies.BuyHold
+                      Quant.Strategies.RegimeTilt
+                      Quant.Backtest
+                      Quant.Metrics
+                      Quant.Report
+    build-depends:    base >=4.14 && <5,
+                      quant-core,
+                      vector >=0.12 && <0.14,
+                      containers,
+                      bytestring,
+                      text,
+                      time,
+                      aeson >=2.0,
+                      aeson-pretty,
+                      cassava >=0.5,
+                      directory,
+                      filepath,
+                      http-client >=0.7,
+                      http-types,
+                      http-client-tls >=0.3
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+test-suite quant-test
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Spec.hs
+    other-modules:    Reference.Series
+                      CoreVsReferenceSpec
+                      AlignSpec
+                      MetricsSpec
+                      BacktestSpec
+    build-depends:    base,
+                      quant,
+                      quant-core,
+                      vector,
+                      time,
+                      hspec >=2.7,
+                      QuickCheck >=2.14
+    default-language: Haskell2010
+    ghc-options:      -threaded -rtsopts -with-rtsopts=-N
