@@ -1,0 +1,11 @@
+{
+  "risky": "SPY",
+  "safe": "BIL",
+  "smaWindow": 200,
+  "momentumWindow": 252,
+  "volWindow": 20,
+  "targetVol": 0.15,
+  "maxWeight": 1.0,
+  "rebalance": "monthly",
+  "costBps": 5
+}

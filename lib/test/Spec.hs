@@ -6,6 +6,8 @@ import qualified AlignSpec
 import qualified BacktestSpec
 import qualified CoreVsReferenceSpec
 import qualified MetricsSpec
+import qualified TechnicalSpec
+import qualified TrendFilterSpec
 
 main :: IO ()
 main = hspec $ do
@@ -13,3 +15,5 @@ main = hspec $ do
   AlignSpec.spec
   MetricsSpec.spec
   BacktestSpec.spec
+  TechnicalSpec.spec
+  TrendFilterSpec.spec

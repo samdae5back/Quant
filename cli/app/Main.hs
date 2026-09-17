@@ -26,6 +26,7 @@ import Text.Printf (printf)
 
 import Quant.Backtest
 import Quant.Core.Error (coreVersion)
+import Quant.Core.Matrix (column)
 import Quant.Data.Align (alignPanel)
 import Quant.Data.Cache
 import Quant.Data.Csv (parseDateValueCsv, parseCloseCsv, renderDateValueCsv, renderPanelCsv)
@@ -39,6 +40,7 @@ import Quant.Report
 import Quant.State (buildState)
 import Quant.Strategies.BuyHold
 import Quant.Strategies.RegimeTilt
+import Quant.Strategies.TrendFilter
 import Quant.Strategy
 import Quant.Types
 
@@ -193,6 +195,10 @@ runBacktestCmd o = do
       path <- maybe (die' "regime-tilt needs --config FILE") pure (bConfig o)
       params <- A.eitherDecodeFileStrict path >>= either (die' . ("config: " ++)) pure
       pure (regimeTilt params, True)
+    "trend-filter" -> do
+      path <- maybe (die' "trend-filter needs --config FILE") pure (bConfig o)
+      params <- A.eitherDecodeFileStrict path >>= either (die' . ("config: " ++)) pure
+      pure (trendFilter params, False)
     other -> die' ("unknown strategy: " ++ other)
 
   prices <- loadPricePanel dd (stratUniverse strat)
@@ -216,6 +222,8 @@ runBacktestCmd o = do
   kv "sharpe" (printf "%8.2f" (mSharpe m))
   kv "max drawdown" (pct (mMaxDrawdown m))
   kv "avg turnover" (printf "%8.4f" (mAvgTurnover m))
+  forM_ (zip [0 ..] (stratUniverse strat)) $ \(j, sym) ->
+    kv ("avg w " ++ T.unpack (unSymbol sym)) (printf "%8.4f" (VS.sum (column (brWeights result) j) / fromIntegral (V.length (brDates result))))
   putStrLn ("written: " ++ outDir ++ "/equity.csv, summary.json")
   unless (VS.all (not . isNaN) (brEquity result)) $
     hPutStrLn stderr "warning: equity curve contains NaN; check for gaps in the price data"

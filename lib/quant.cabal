@@ -33,6 +33,8 @@ library
                       Quant.Strategy
                       Quant.Strategies.BuyHold
                       Quant.Strategies.RegimeTilt
+                      Quant.Strategies.TrendFilter
+                      Quant.Technical
                       Quant.Backtest
                       Quant.Metrics
                       Quant.Report
@@ -64,6 +66,8 @@ test-suite quant-test
                       AlignSpec
                       MetricsSpec
                       BacktestSpec
+                      TechnicalSpec
+                      TrendFilterSpec
     build-depends:    base,
                       quant,
                       quant-core,

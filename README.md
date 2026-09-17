@@ -86,13 +86,14 @@ Quant/
 │   │   ├── Types.hs            # Symbol, SeriesId, Sign, Window, Bps, TimeSeries, Panel
 │   │   ├── Data/               # Csv Fred Prices Cache Calendar Align
 │   │   ├── Indicator.hs        # 지표 정의 타입: 소스, 변환, 부호, 발표 지연, z 창
-│   │   ├── Indicators.hs       # 기본 지표 열 개
+│   │   ├── Indicators.hs       # 기본 매크로 지표 열 개
+│   │   ├── Technical.hs        # 가격 시계열용 테스트 지표: SMA, 모멘텀, 실현 변동성
 │   │   ├── State.hs            # 상태 벡터 패널 생성
 │   │   ├── MetaIndex.hs        # Equal | PCA | Fixed 가중
 │   │   ├── Regime.hs           # turbulence, absorption, 국면 라벨
 │   │   ├── Exposure.hs         # 종목 베타 벡터, 코사인 유사도
 │   │   ├── Strategy.hs         # Strategy 레코드, 리밸런스 스케줄
-│   │   ├── Strategies/         # BuyHold.hs RegimeTilt.hs
+│   │   ├── Strategies/         # BuyHold.hs RegimeTilt.hs TrendFilter.hs
 │   │   ├── Backtest.hs         # 스케줄 적용 후 C 시뮬레이터 호출
 │   │   ├── Metrics.hs          # CAGR, 변동성, 샤프, 최대낙폭, 회전율
 │   │   └── Report.hs           # runs/ 아래 equity.csv, summary.json
@@ -131,7 +132,7 @@ Quant/
 make build          # cabal build all
 make test           # C 단위 테스트 + cabal test all
 make asan           # C 커널을 AddressSanitizer / UBSan 으로 실행
-make smoke          # 합성 데이터로 buy-hold 와 regime-tilt 백테스트
+make smoke          # 합성 데이터로 buy-hold, regime-tilt, trend-filter 백테스트
 
 make fetch          # FRED 지표와 가격을 data/cache 에 내려받음 (API 키 불필요)
 make state          # 상태 패널과 메타지수를 runs/state.csv 로
@@ -146,8 +147,18 @@ CLI를 직접 부를 때는 실행 파일을 `exe:quant`로 지정합니다 (`qu
 cabal run exe:quant -- backtest --data data/sample --strategy buy-hold --symbols SPY
 cabal run exe:quant -- backtest --data data/sample --strategy regime-tilt \
     --config config/strategies/regime-tilt.json --weighting pca
+cabal run exe:quant -- backtest --data data/sample --strategy trend-filter \
+    --config config/strategies/trend-filter.json
 cabal run exe:quant -- state --data data/sample --out runs/state.csv
 ```
+
+**전략 목록.**
+
+| 이름 | 입력 | 규칙 |
+|---|---|---|
+| `buy-hold` | 가격 | 유니버스 동일가중 보유. 벤치마크 |
+| `trend-filter` | 가격, `Quant.Technical` 지표 세 개 | 가격이 200일 SMA 위이고 12개월 모멘텀이 양이면 위험자산 보유, 비중은 목표 변동성 / 20일 실현 변동성으로 스케일링, 나머지는 안전자산. 가장 기초적인 규칙 기반 전략 |
+| `regime-tilt` | 가격, 매크로 상태 벡터의 메타지수 | 메타지수 국면에 따라 위험자산 비중을 세 단계로 조절 |
 
 `backtest`는 지표를 표로 출력하고 `runs/<날짜>/<전략>/equity.csv`와 `summary.json`을 남깁니다. `state`는 상태 패널 CSV와 `.meta.csv`를 남깁니다. 노트북은 이 파일들을 읽기만 합니다.
 

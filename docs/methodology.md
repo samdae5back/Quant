@@ -59,6 +59,23 @@ risky weight; the safe asset takes the remainder. Rebalanced on the schedule
 in the config (default monthly). Benchmark: buy and hold of the risky asset.
 The realistic goal is a smaller maximum drawdown, not a higher return.
 
+## Strategy: trend filter
+
+The most basic rule-based strategy, built from three price indicators in
+`Quant.Technical`:
+
+* Trend: close above its `smaWindow`-bar simple moving average.
+* Momentum: trailing `momentumWindow`-bar total return above zero.
+* Volatility: annualised standard deviation of daily returns over
+  `volWindow` bars.
+
+Risky weight `w_t = min(maxWeight, targetVol / realizedVol_t)` while both
+trend and momentum conditions hold, otherwise zero; the safe asset takes
+`1 - w_t`. Until all three indicators are finite the strategy holds the safe
+asset. Rebalanced on the configured schedule (default monthly). It exists as
+a baseline the macro strategies must beat, and as the smallest complete
+example of the strategy record.
+
 ## Roadmap
 
 1. Rolling (out-of-sample) turbulence and absorption.

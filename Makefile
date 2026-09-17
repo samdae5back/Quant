@@ -30,6 +30,8 @@ smoke:
 	cabal run exe:quant -- backtest --data data/sample --strategy buy-hold --symbols SPY --out runs/smoke/buy-hold
 	cabal run exe:quant -- backtest --data data/sample --strategy regime-tilt \
 	    --config config/strategies/regime-tilt.json --out runs/smoke/regime-tilt
+	cabal run exe:quant -- backtest --data data/sample --strategy trend-filter \
+	    --config config/strategies/trend-filter.json --out runs/smoke/trend-filter
 
 install:
 	cabal install exe:quant --overwrite-policy=always
