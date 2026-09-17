@@ -9,6 +9,7 @@ void test_rolling_mean(void);
 void test_rolling_mean_with_nan(void);
 void test_rolling_std_and_zscore(void);
 void test_rolling_large_offset(void);
+void test_rolling_std_cancellation(void);
 void test_ewma(void);
 void test_cholesky_inverse(void);
 void test_eigen(void);
@@ -25,6 +26,7 @@ int main(void)
     RUN(test_rolling_mean_with_nan);
     RUN(test_rolling_std_and_zscore);
     RUN(test_rolling_large_offset);
+    RUN(test_rolling_std_cancellation);
     RUN(test_ewma);
     RUN(test_cholesky_inverse);
     RUN(test_eigen);
